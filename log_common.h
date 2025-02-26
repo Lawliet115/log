@@ -3,10 +3,13 @@
 #include <string.h>
 #include <cstdint>
 #include <memory>
+#include <vector>
 #include <string>
 #include <string_view>
 #include <type_traits>
 
+#include "fmt/core.h"
+#include "fmt/chrono.h"
 
 #define LOGGER_LEVEL_TRACE 0
 #define LOGGER_LEVEL_DEBUG 1
@@ -38,8 +41,7 @@ struct SourceLocation {
 
   SourceLocation(StringView file_name_in, int32_t line_in, StringView func_name_in)
       : file_name{file_name_in}, line{line_in}, func_name{func_name_in} {
-    // file_name_in is a full path, we only need the file name
-    // get the file name by finding the last slash
+
     if (!file_name.empty()) {
       size_t pos = file_name.rfind('/');
       if (pos != StringView::npos) {
