@@ -20,8 +20,9 @@ endif()
 
 set(COMPRESS_SRCS compress/zlib_compress.cpp compress/zstd_compress.cpp)
 set(CONTEXT_SRCS context/context.cpp context/executor.cpp context/thread_pool.cpp)
-set(FORMATTER_SRCS formatter/default_formatter.cpp)
+set(FORMATTER_SRCS formatter/effective_formatter.cpp formatter/default_formatter.cpp)
 set(SINK_SRCS sinks/console_sink.cpp )
+set(PROTO_SRCS proto/effective_msg.pb.cc)
 
 set(SRCS
     log_handle.cpp
@@ -32,6 +33,7 @@ set(SRCS
     ${MMAP_SRCS}
     ${CONTEXT_SRCS}
     ${COMPRESS_SRCS}
+    ${PROTO_SRCS}
 )
 
 add_executable(${PROJECT_NAME} test.cpp ${SRCS}) # 生成可执行文件，这里程序名即为功能名
@@ -53,6 +55,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ZLIB::ZLIB)
 
 find_package(zstd CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE zstd::libzstd)
+
+find_package(Protobuf REQUIRED)
+target_link_libraries(${PROJECT_NAME}  PRIVATE protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
 
 
 

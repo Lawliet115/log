@@ -15,6 +15,8 @@ class LogSink {
 
   virtual void SetFormatter(std::unique_ptr<Formatter> formatter) = 0;
 
+  
+
   virtual void Flush() {}
 };
 }  // namespace logger
