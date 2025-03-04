@@ -23,6 +23,7 @@ set(CONTEXT_SRCS context/context.cpp context/executor.cpp context/thread_pool.cp
 set(FORMATTER_SRCS formatter/effective_formatter.cpp formatter/default_formatter.cpp)
 set(SINK_SRCS sinks/console_sink.cpp )
 set(PROTO_SRCS proto/effective_msg.pb.cc)
+set(CRYPT_SRCS crypt/aes_crypt.cpp crypt/crypt.cpp)
 
 set(SRCS
     log_handle.cpp
@@ -34,6 +35,7 @@ set(SRCS
     ${CONTEXT_SRCS}
     ${COMPRESS_SRCS}
     ${PROTO_SRCS}
+    ${CRYPT_SRCS}
 )
 
 add_executable(${PROJECT_NAME} test.cpp ${SRCS}) # 生成可执行文件，这里程序名即为功能名
@@ -58,6 +60,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE zstd::libzstd)
 
 find_package(Protobuf REQUIRED)
 target_link_libraries(${PROJECT_NAME}  PRIVATE protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+find_package(cryptopp CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE cryptopp::cryptopp)
+
 
 
 
