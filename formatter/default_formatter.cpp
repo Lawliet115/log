@@ -1,5 +1,5 @@
 #include "formatter/default_formatter.h"
-
+#include"utils/sys_util.h"
 
 namespace logger {
 
@@ -14,8 +14,8 @@ dest = fmt::format("[{0:%Y-%m-%d %H:%M:%S}] [{1}] [{2}:{3}] [{4}:{5}] {6}",
   KLogValueStr[static_cast<int>(msg.level)],
   msg.location.file_name.data(),
   msg.location.line,
-  "PID",
-  "TID",
+  logger::GetProcessId(),
+  logger::GetThreadId(),
   msg.message.data()
 );
 }
