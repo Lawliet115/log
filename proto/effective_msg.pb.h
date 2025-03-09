@@ -193,31 +193,15 @@ class EffectiveMsg final : public ::google::protobuf::MessageLite
 
   // accessors -------------------------------------------------------
   enum : int {
-    kLevelFieldNumber = 1,
     kFileNameFieldNumber = 6,
     kFuncNameFieldNumber = 7,
     kLogInfoFieldNumber = 8,
     kTimestampFieldNumber = 2,
+    kLevelFieldNumber = 1,
     kPidFieldNumber = 3,
     kTidFieldNumber = 4,
     kLineFieldNumber = 5,
   };
-  // string level = 1;
-  void clear_level() ;
-  const std::string& level() const;
-  template <typename Arg_ = const std::string&, typename... Args_>
-  void set_level(Arg_&& arg, Args_... args);
-  std::string* mutable_level();
-  PROTOBUF_NODISCARD std::string* release_level();
-  void set_allocated_level(std::string* value);
-
-  private:
-  const std::string& _internal_level() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_level(
-      const std::string& value);
-  std::string* _internal_mutable_level();
-
-  public:
   // string file_name = 6;
   void clear_file_name() ;
   const std::string& file_name() const;
@@ -276,6 +260,16 @@ class EffectiveMsg final : public ::google::protobuf::MessageLite
   void _internal_set_timestamp(::int64_t value);
 
   public:
+  // int32 level = 1;
+  void clear_level() ;
+  ::int32_t level() const;
+  void set_level(::int32_t value);
+
+  private:
+  ::int32_t _internal_level() const;
+  void _internal_set_level(::int32_t value);
+
+  public:
   // int32 pid = 3;
   void clear_pid() ;
   ::int32_t pid() const;
@@ -312,7 +306,7 @@ class EffectiveMsg final : public ::google::protobuf::MessageLite
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       3, 8, 0,
-      60, 2>
+      55, 2>
       _table_;
 
   friend class ::google::protobuf::MessageLite;
@@ -329,11 +323,11 @@ class EffectiveMsg final : public ::google::protobuf::MessageLite
     inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                           ::google::protobuf::Arena* arena, const Impl_& from,
                           const EffectiveMsg& from_msg);
-    ::google::protobuf::internal::ArenaStringPtr level_;
     ::google::protobuf::internal::ArenaStringPtr file_name_;
     ::google::protobuf::internal::ArenaStringPtr func_name_;
     ::google::protobuf::internal::ArenaStringPtr log_info_;
     ::int64_t timestamp_;
+    ::int32_t level_;
     ::int32_t pid_;
     ::int32_t tid_;
     ::int32_t line_;
@@ -360,52 +354,26 @@ class EffectiveMsg final : public ::google::protobuf::MessageLite
 
 // EffectiveMsg
 
-// string level = 1;
+// int32 level = 1;
 inline void EffectiveMsg::clear_level() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.level_.ClearToEmpty();
+  _impl_.level_ = 0;
 }
-inline const std::string& EffectiveMsg::level() const
-    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+inline ::int32_t EffectiveMsg::level() const {
   // @@protoc_insertion_point(field_get:EffectiveMsg.level)
   return _internal_level();
 }
-template <typename Arg_, typename... Args_>
-inline PROTOBUF_ALWAYS_INLINE void EffectiveMsg::set_level(Arg_&& arg,
-                                                     Args_... args) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.level_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+inline void EffectiveMsg::set_level(::int32_t value) {
+  _internal_set_level(value);
   // @@protoc_insertion_point(field_set:EffectiveMsg.level)
 }
-inline std::string* EffectiveMsg::mutable_level() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  std::string* _s = _internal_mutable_level();
-  // @@protoc_insertion_point(field_mutable:EffectiveMsg.level)
-  return _s;
-}
-inline const std::string& EffectiveMsg::_internal_level() const {
+inline ::int32_t EffectiveMsg::_internal_level() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.level_.Get();
+  return _impl_.level_;
 }
-inline void EffectiveMsg::_internal_set_level(const std::string& value) {
+inline void EffectiveMsg::_internal_set_level(::int32_t value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.level_.Set(value, GetArena());
-}
-inline std::string* EffectiveMsg::_internal_mutable_level() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  return _impl_.level_.Mutable( GetArena());
-}
-inline std::string* EffectiveMsg::release_level() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  // @@protoc_insertion_point(field_release:EffectiveMsg.level)
-  return _impl_.level_.Release();
-}
-inline void EffectiveMsg::set_allocated_level(std::string* value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.level_.SetAllocated(value, GetArena());
-  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.level_.IsDefault()) {
-    _impl_.level_.Set("", GetArena());
-  }
-  // @@protoc_insertion_point(field_set_allocated:EffectiveMsg.level)
+  _impl_.level_ = value;
 }
 
 // int64 timestamp = 2;

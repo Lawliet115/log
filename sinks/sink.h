@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <filesystem>
 
 #include "formatter/formatter.h"
 #include "log_common.h"
@@ -15,8 +16,9 @@ class LogSink {
 
   virtual void SetFormatter(std::unique_ptr<Formatter> formatter) = 0;
 
-  
-
   virtual void Flush() {}
+
+  virtual std::filesystem::path GetLog_file_path_() = 0;
+
 };
 }  // namespace logger

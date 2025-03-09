@@ -2,7 +2,7 @@ syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 
 message EffectiveMsg {
-  string level = 1;
+  int32 level = 1;
   int64 timestamp = 2;
   int32 pid = 3;
   int32 tid = 4;

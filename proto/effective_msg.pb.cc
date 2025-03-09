@@ -24,10 +24,7 @@ namespace _fl = ::google::protobuf::internal::field_layout;
 
 inline constexpr EffectiveMsg::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
-      : level_(
-            &::google::protobuf::internal::fixed_address_empty_string,
-            ::_pbi::ConstantInitialized()),
-        file_name_(
+      : file_name_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         func_name_(
@@ -37,6 +34,7 @@ inline constexpr EffectiveMsg::Impl_::Impl_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         timestamp_{::int64_t{0}},
+        level_{0},
         pid_{0},
         tid_{0},
         line_{0},
@@ -79,8 +77,7 @@ EffectiveMsg::EffectiveMsg(::google::protobuf::Arena* arena)
 inline PROTOBUF_NDEBUG_INLINE EffectiveMsg::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
     const Impl_& from, const ::EffectiveMsg& from_msg)
-      : level_(arena, from.level_),
-        file_name_(arena, from.file_name_),
+      : file_name_(arena, from.file_name_),
         func_name_(arena, from.func_name_),
         log_info_(arena, from.log_info_),
         _cached_size_{0} {}
@@ -111,8 +108,7 @@ EffectiveMsg::EffectiveMsg(
 inline PROTOBUF_NDEBUG_INLINE EffectiveMsg::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
-      : level_(arena),
-        file_name_(arena),
+      : file_name_(arena),
         func_name_(arena),
         log_info_(arena),
         _cached_size_{0} {}
@@ -134,7 +130,6 @@ inline void EffectiveMsg::SharedDtor(MessageLite& self) {
   EffectiveMsg& this_ = static_cast<EffectiveMsg&>(self);
   this_._internal_metadata_.Delete<std::string>();
   ABSL_DCHECK(this_.GetArena() == nullptr);
-  this_._impl_.level_.Destroy();
   this_._impl_.file_name_.Destroy();
   this_._impl_.func_name_.Destroy();
   this_._impl_.log_info_.Destroy();
@@ -173,7 +168,7 @@ const ::google::protobuf::internal::ClassData* EffectiveMsg::GetClassData() cons
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 8, 0, 60, 2> EffectiveMsg::_table_ = {
+const ::_pbi::TcParseTable<3, 8, 0, 55, 2> EffectiveMsg::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -194,9 +189,9 @@ const ::_pbi::TcParseTable<3, 8, 0, 60, 2> EffectiveMsg::_table_ = {
     // string log_info = 8;
     {::_pbi::TcParser::FastUS1,
      {66, 63, 0, PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.log_info_)}},
-    // string level = 1;
-    {::_pbi::TcParser::FastUS1,
-     {10, 63, 0, PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.level_)}},
+    // int32 level = 1;
+    {::_pbi::TcParser::FastV32S1,
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.level_)}},
     // int64 timestamp = 2;
     {::_pbi::TcParser::FastV64S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.timestamp_)}},
@@ -218,9 +213,9 @@ const ::_pbi::TcParseTable<3, 8, 0, 60, 2> EffectiveMsg::_table_ = {
   }}, {{
     65535, 65535
   }}, {{
-    // string level = 1;
+    // int32 level = 1;
     {PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.level_), 0, 0,
-    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    (0 | ::_fl::kFcSingular | ::_fl::kInt32)},
     // int64 timestamp = 2;
     {PROTOBUF_FIELD_OFFSET(EffectiveMsg, _impl_.timestamp_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
@@ -245,9 +240,8 @@ const ::_pbi::TcParseTable<3, 8, 0, 60, 2> EffectiveMsg::_table_ = {
   }},
   // no aux_entries
   {{
-    "\14\5\0\0\0\0\11\11\10\0\0\0\0\0\0\0"
+    "\14\0\0\0\0\0\11\11\10\0\0\0\0\0\0\0"
     "EffectiveMsg"
-    "level"
     "file_name"
     "func_name"
     "log_info"
@@ -261,7 +255,6 @@ PROTOBUF_NOINLINE void EffectiveMsg::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.level_.ClearToEmpty();
   _impl_.file_name_.ClearToEmpty();
   _impl_.func_name_.ClearToEmpty();
   _impl_.log_info_.ClearToEmpty();
@@ -286,12 +279,11 @@ PROTOBUF_NOINLINE void EffectiveMsg::Clear() {
           ::uint32_t cached_has_bits = 0;
           (void)cached_has_bits;
 
-          // string level = 1;
-          if (!this_._internal_level().empty()) {
-            const std::string& _s = this_._internal_level();
-            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "EffectiveMsg.level");
-            target = stream->WriteStringMaybeAliased(1, _s, target);
+          // int32 level = 1;
+          if (this_._internal_level() != 0) {
+            target = ::google::protobuf::internal::WireFormatLite::
+                WriteInt32ToArrayWithField<1>(
+                    stream, this_._internal_level(), target);
           }
 
           // int64 timestamp = 2;
@@ -371,11 +363,6 @@ PROTOBUF_NOINLINE void EffectiveMsg::Clear() {
 
           ::_pbi::Prefetch5LinesFrom7Lines(&this_);
            {
-            // string level = 1;
-            if (!this_._internal_level().empty()) {
-              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
-                                              this_._internal_level());
-            }
             // string file_name = 6;
             if (!this_._internal_file_name().empty()) {
               total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -395,6 +382,11 @@ PROTOBUF_NOINLINE void EffectiveMsg::Clear() {
             if (this_._internal_timestamp() != 0) {
               total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
                   this_._internal_timestamp());
+            }
+            // int32 level = 1;
+            if (this_._internal_level() != 0) {
+              total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
+                  this_._internal_level());
             }
             // int32 pid = 3;
             if (this_._internal_pid() != 0) {
@@ -427,9 +419,6 @@ void EffectiveMsg::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::go
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_level().empty()) {
-    _this->_internal_set_level(from._internal_level());
-  }
   if (!from._internal_file_name().empty()) {
     _this->_internal_set_file_name(from._internal_file_name());
   }
@@ -441,6 +430,9 @@ void EffectiveMsg::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::go
   }
   if (from._internal_timestamp() != 0) {
     _this->_impl_.timestamp_ = from._impl_.timestamp_;
+  }
+  if (from._internal_level() != 0) {
+    _this->_impl_.level_ = from._impl_.level_;
   }
   if (from._internal_pid() != 0) {
     _this->_impl_.pid_ = from._impl_.pid_;
@@ -467,7 +459,6 @@ void EffectiveMsg::InternalSwap(EffectiveMsg* PROTOBUF_RESTRICT other) {
   auto* arena = GetArena();
   ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.level_, &other->_impl_.level_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.file_name_, &other->_impl_.file_name_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.func_name_, &other->_impl_.func_name_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.log_info_, &other->_impl_.log_info_, arena);

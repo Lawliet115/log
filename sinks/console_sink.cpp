@@ -22,4 +22,6 @@ void ConsoleSink::SetFormatter(std::unique_ptr<Formatter> formatter) {
   formatter_ = std::move(formatter);
 }
 
+std::filesystem::path ConsoleSink::GetLog_file_path_() {return std::filesystem::path();}
+
 }  // namespace logger

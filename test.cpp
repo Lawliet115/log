@@ -1,75 +1,73 @@
-#pragma once
 #include <iostream>
-#include <memory>
 
-#include "formatter/default_formatter.h"
-#include "formatter/effective_formatter.h"
-#include "crypt/aes_crypt.h"
-#include "proto/effective_msg.pb.h"
-#include "utils/sys_util.h"
-#include "utils/file_util.h"
+#include <chrono>
 
 #include "log_handle.h"
-#include "sinks/sink.h"
 #include "sinks/console_sink.h"
-#include "log_common.h"
-#include "internal_log.h"
-#include "mmap/mmap.h"
-#include "context/context.h"
-#include "compress/zstd_compress.h"
-#include "compress/zlib_compress.h"  
+#include "sinks/effective_sink.h"
+#include "decode/decode.h"
 
+std::string GenerateRandomString(int length) {
+    std::string str;
+    str.reserve(length);
+    for (int i = 0; i < length; ++i) {
+      str.push_back('a' + rand() % 26);
+    }
+    return str;
+  }
 
 int main(){
     
-    auto ecdh_key = logger::crypt::GenECDHKey();
-    auto client_pri = std::get<0>(ecdh_key);
-    auto client_pub = std::get<1>(ecdh_key);
-    std::cout << "client_pri: " << client_pri << std::endl;
-    std::cout << "client_pub: " << client_pub << std::endl;
-  
-    auto aes_key = logger::crypt::AESCrypt::GenerateKey();
-    std::cout << "aes_key: " << aes_key << std::endl;
-  
-    auto ecdh_key2 = logger::crypt::GenECDHKey();
-    auto server_pri = std::get<0>(ecdh_key2);
-    auto server_pub = std::get<1>(ecdh_key2);
-    std::cout << "server_pri: " << server_pri << " size " << server_pri.size() << std::endl;
-    std::cout << "server_pub: " << server_pub << " size " << server_pub.size() << std::endl;
-  
-    auto client_pri_hex = logger::crypt::BinaryKeyToHex(client_pri);
-    std::cout << "client_pri_hex: " << client_pri_hex << std::endl;
-    auto client_pub_hex = logger::crypt::BinaryKeyToHex(client_pub);
-    std::cout << "client_pub_hex: " << client_pub_hex << std::endl;
-  
-    auto server_pri_hex = logger::crypt::BinaryKeyToHex(server_pri);
-    std::cout << "server_pri_hex: " << server_pri_hex << std::endl;
-    auto server_pub_hex = logger::crypt::BinaryKeyToHex(server_pub);
-    std::cout << "server_pub_hex: " << server_pub_hex << std::endl;
-  
-    auto client_shared_key = logger::crypt::GenECDHSharedSecret(client_pri, server_pub);
-    std::cout << "client_shared_key: " << client_shared_key << std::endl;
-  
-    auto server_shared_key = logger::crypt::GenECDHSharedSecret(server_pri, client_pub);
-    std::cout << "server_shared_key: " << server_shared_key << std::endl;
-  
-    auto shared_key_hex = logger::crypt::BinaryKeyToHex(client_shared_key);
-    std::cout << "shared_key_hex: " << shared_key_hex << std::endl;
-  
-    logger::crypt::AESCrypt aes(client_shared_key);
-    std::string input = "hello, world!";
-    std::string output;
-    output.clear();
+  std::cout << "Logger Example Start!" << std::endl;
+  std::shared_ptr<logger::LogSink> sink = std::make_shared<logger::ConsoleSink>();
+  logger::EffectiveSink::Conf conf;
+  conf.dir = "C:\\Users\\Lawliet\\Desktop\\log_test\\logger_test";
+  conf.prefix = "loggerdemo";
 
-    std::cout << "iv: " << aes.GetIv_() << std::endl;
+  auto ecdh_key = logger::crypt::GenECDHKey();
+  auto sever_pri_key = std::get<0>(ecdh_key);
+  conf.pub_key = std::get<1>(ecdh_key);
 
-    aes.Encrypt(input.data(), input.size(), output);
-    output = logger::crypt::BinaryKeyToHex(output);
-    std::cout << "crypted: " << output << std::endl;
+  {
+    std::shared_ptr<logger::LogSink> effective_sink = std::make_shared<logger::EffectiveSink>(conf);
+    logger::LogHandle handle({effective_sink});
 
-    output = logger::crypt::HexKeyToBinary(output);
-    std::string decrypted = aes.Decrypt(output.data(), output.size());
-    std::cout << "decrypted: " << decrypted << std::endl;
+    //std::string str =  GenerateRandomString(500);
+    std::string str = "Hello MyLog!";
+
+    auto begin = std::chrono::system_clock::now();
+    // for (int i = 0; i < 1000000; ++i) {
+    //   if (i % 100000 == 0) {
+    //     std::cout << "i " << i << std::endl;
+    //   }
+    //   handle.Log(logger::LogLevel::kInfo, logger::SourceLocation(), str);
+    // }
+    std::cout << "log: " << str << std::endl;
+    
+    handle.Log(logger::LogLevel::kInfo, logger::SourceLocation(), str);
+    effective_sink->Flush();
+    auto end = std::chrono::system_clock::now();
+    std::chrono::milliseconds diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+    std::cout << "our logger diff: " << diff.count() << std::endl;
+
+    std::cout << "file path: " << effective_sink->GetLog_file_path_().string() << std::endl;
+
+
+    std::string input_file_path =  effective_sink->GetLog_file_path_().string();
+    std::string output_file_path = "C:\\Users\\Lawliet\\Desktop\\log_test\\logger_test\\hello.txt";
+    try {
+      decode_formatter = std::make_unique<DecodeFormatter>();
+      decode_formatter->SetPattern("[%l][%D:%S][%p:%t][%F:%f:%#]%v");
+      decompress = std::make_unique<logger::compress::ZstdCompress>();
+      DecodeFile(input_file_path, sever_pri_key, output_file_path);
+    } catch (const std::exception& e) {
+      std::cerr << "Decode failed: " << e.what() << std::endl;
+      return 1;
+    }
+
+    }
+
+    std::cout << "Logger Example End!" << std::endl;
 
     return 0;
 }

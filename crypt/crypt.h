@@ -19,6 +19,8 @@ std::string BinaryKeyToHex(const std::string& binary_key);
 // 将十六进制密钥转换为二进制字符串的函数
 std::string HexKeyToBinary(const std::string& hex_key);
 
+
+
 // Crypt加密类
 class Crypt {
  public:
@@ -29,6 +31,10 @@ class Crypt {
 
   // 用于解密数据，输入为数据指针和大小，返回解密后的字符串
   virtual std::string Decrypt(const void* data, size_t size) = 0;
+
+  virtual std::string GetIv_() = 0;
+
+  virtual void SetIv_(const std::string& iv) = 0;
 };
 
 }  // namespace crypt

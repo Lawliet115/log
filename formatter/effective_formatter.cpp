@@ -6,15 +6,12 @@
 
 namespace logger
 {
-  const std::vector<std::string> KLogValueStr{
-    "Trace", "Debug", "Info", "Warn", "Error", "Fatal","Off" 
-  };
 
 void EffectiveFormatter::Format(const LogMsg& msg, std::string& dest){
   //初始化序列化对象
   EffectiveMsg effective_msg;
-  effective_msg.set_level(KLogValueStr[static_cast<int>(msg.level)]);
-  effective_msg.set_timestamp(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+  effective_msg.set_level(static_cast<int>(msg.level));
+  effective_msg.set_timestamp(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
   effective_msg.set_pid(logger::GetProcessId());
   effective_msg.set_tid(logger::GetThreadId());
 

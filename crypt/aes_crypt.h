@@ -23,7 +23,9 @@ class AESCrypt final : public Crypt {
   // 解密数据
   std::string Decrypt(const void* data, size_t size) override;
 
-  std::string GetIv_() { return iv_; };
+  std::string GetIv_() override { return iv_; };
+
+  void SetIv_(const std::string& iv) override { iv_ = iv; };
 
  private:
   // 存储AES密钥
